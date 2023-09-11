@@ -21,4 +21,10 @@ RTK Query lấy cảm hứng từ những thư viện như Apollo Client, React 
 
 ## UI templete
 
+![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/26df1a9a-80d2-468c-bd0e-70a038292e39)
+
+## Redux devtool check work flow
+
 ![workflow](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/c0ebae72-b1bc-4d97-85bf-b2e4b1d6d779)
+
+
