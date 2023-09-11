@@ -1,3 +1,12 @@
+# Báo cáo thực tập tuần 1
+
+## Trước ghi clone Project này về hãy clone Server về trước để đảm bảo Website có dữ liệu
+
+```
+git clone https://github.com/quocbinh-npm9081/dummyServer-EZTEK-RTK.git
+
+```
+
 ## RTK query là gì?
 
 RTK query là thư viện thuộc hệ sinh thái Redux giúp chúng ta quản lý việc gọi API và caching dễ dàng.
@@ -26,5 +35,3 @@ RTK Query lấy cảm hứng từ những thư viện như Apollo Client, React 
 ## Redux devtool check work flow
 
 ![workflow](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/c0ebae72-b1bc-4d97-85bf-b2e4b1d6d779)
-
-
