@@ -9,6 +9,65 @@
 git clone https://github.com/quocbinh-npm9081/dummyServer-EZTEK-RTK.git
 ```
 
+## API Reference
+
+```
+interface Post {
+  id: string
+  title: string
+  description: string
+  publicDate: string
+  featuredImage: string
+  published: boolean
+}
+```
+
+#### Lấy thông tin của tất cả bài post:
+
+```http
+  GET http://localhost:4000/posts
+```
+
+#### Lấy thông tin của 1 bài post theo Id
+
+```http
+  GET http://localhost:4000/posts/{{id}}
+```
+
+| Parameter | Type     | Description               |
+| :-------- | :------- | :------------------------ |
+| `id`      | `string` | **Required**. id của post |
+
+#### Thêm mới 1 bài post
+
+```http
+  UPDATE http://localhost:4000/posts/
+```
+
+> body : Post
+
+#### Cập nhập 1 bài post theo Id
+
+```http
+  UPDATE http://localhost:4000/posts/{{id}}
+```
+
+| Parameter | Type     | Description               |
+| :-------- | :------- | :------------------------ |
+| `id`      | `string` | **Required**. id của post |
+
+> body : Post
+
+#### Xóa 1 bài post theo Id
+
+```http
+  DELETE http://localhost:4000/posts/{{id}}
+```
+
+| Parameter | Type     | Description               |
+| :-------- | :------- | :------------------------ |
+| `id`      | `string` | **Required**. id của post |
+
 ## RTK query là gì?
 
 RTK query là thư viện thuộc hệ sinh thái Redux giúp chúng ta quản lý việc gọi API và caching dễ dàng.
