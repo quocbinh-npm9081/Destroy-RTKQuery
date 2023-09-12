@@ -23,7 +23,9 @@ Post là responsive trả về và Omit<Post, 'id'> là body gửi lên (đã lo
 ### Cập nhập UI sau khi thực hiện POST, PUT,...
 
 - Cách 1: Cách truyền thống như trước giờ vẫn làm đó là post body lên seveer là server trả về dữ liệu của post đó
+
   1.Lấy dữ liệu server trả về và update vào state redux
+
   2.React thấy state Redux thay đổi nên nó sẽ automatically re-render update ui
 
 > [!WARNING]  
