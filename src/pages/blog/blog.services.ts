@@ -83,8 +83,18 @@ export const blogApi = createApi({
       //body là ở cient truyền lên cái gì thì ở đây ta nhận cái đấy
       //invalidatesTags cung cấp các tags nếu các tag match với providesTags thì providesTags đó sẽ được gọi lại
       invalidatesTags: (result, error, body) => [{ type: 'Posts', id: 'LIST' }] // kết quả này giống hệt với return trong providesTags của getPost nên getPost sẽ được gợi lại
+    }),
+    updatePost: build.mutation<Post, { id: string; body: Partial<Post> }>({
+      query(data) {
+        return {
+          url: `posts/${data.id}`,
+          method: 'PUT',
+          body: data.body
+        }
+      },
+      invalidatesTags: (result, error, data) => [{ type: 'Posts', id: data.id }]
     })
   })
 })
 
-export const { useGetPostsQuery, useGetPostQuery, useAddPostMutation } = blogApi // tự phát sinh từ endPoints
+export const { useGetPostsQuery, useGetPostQuery, useAddPostMutation, useUpdatePostMutation } = blogApi // tự phát sinh từ endPoints

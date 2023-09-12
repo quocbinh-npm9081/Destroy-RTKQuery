@@ -1,4 +1,4 @@
-import { useAddPostMutation, useGetPostQuery } from 'pages/blog/blog.services'
+import { useAddPostMutation, useGetPostQuery, useUpdatePostMutation } from 'pages/blog/blog.services'
 import { useState } from 'react'
 import { Post } from 'types/blog.type'
 import { useSelector, useDispatch } from 'react-redux'
@@ -14,10 +14,13 @@ const initialState: Omit<Post, 'id'> = {
 }
 
 export default function CreatePost() {
-  const [formData, setFormData] = useState<Omit<Post, 'id'>>(initialState)
+  const [formData, setFormData] = useState<Omit<Post, 'id'> | Post>(initialState)
   //Unlike the query, Mutation rreturn a tuple , the Mutation hook doesn't execute automatically
   //Không giống như Query hook, Mutation hook không tự dộng trả về, mà ta phải tự đặt các trigger tương ứng với bên trong source của nó
   const [addPost, addPostResult] = useAddPostMutation()
+  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
+  // This is the mutation triggers
+  // This is the destructured mutation result]   = useUpdatePostMutation();
   const postId = useSelector((state: RootState) => state.blog.postId)
   const { data } = useGetPostQuery(postId, { skip: !postId }) //Nếu PostID không có thì không cần gọi lại
   const dispatch = useDispatch()
@@ -25,8 +28,8 @@ export default function CreatePost() {
   const handelSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
-      const result = await addPost(formData).unwrap()
-      console.log('result: ', result)
+      if (Boolean(postId)) await updatePost({ id: postId, body: formData }).unwrap()
+      else await addPost(formData).unwrap()
       setFormData(initialState)
     } catch (error) {
       console.log('error: Something wrong', error)
@@ -129,7 +132,7 @@ export default function CreatePost() {
         {Boolean(postId) && (
           <>
             <button
-              type='submit'
+              // type='submit'
               className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-teal-300 to-lime-300 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-lime-200 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 dark:focus:ring-lime-800'
             >
               <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
