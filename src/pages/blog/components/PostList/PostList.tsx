@@ -9,10 +9,10 @@ export default function PostList() {
   //thường dùng isFetching hơn isLoading
   const { data, isFetching, isLoading } = useGetPostsQuery()
 
-  console.log('data: ', data)
-  console.log('isFetching: ', isFetching)
-  console.log('isLoading: ', isLoading)
-  console.log('=====================')
+  // console.log('data: ', data)
+  // console.log('isFetching: ', isFetching)
+  // console.log('isLoading: ', isLoading)
+  // console.log('=====================')
 
   return (
     <div className='bg-white py-6 sm:py-8 lg:py-12'>

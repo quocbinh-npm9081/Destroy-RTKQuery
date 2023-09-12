@@ -1,6 +1,32 @@
+import { useAddPostMutation } from 'pages/blog/blog.services'
+import { useState } from 'react'
+import { Post } from 'types/blog.type'
+
+const initialState: Omit<Post, 'id'> = {
+  title: '',
+  description: '',
+  publicDate: '',
+  featuredImage: '',
+  published: true
+}
+
 export default function CreatePost() {
+  const [formData, setformData] = useState<Omit<Post, 'id'>>(initialState)
+  //Unlike the query, Mutation rreturn a tuple , the Mutation hook doesn't execute automatically
+  //Không giống như Query hook, Mutation hook không tự dộng trả về, mà ta phải tự đặt các trigger tương ứng với bên trong source của nó
+  const [addPost, addPostResult] = useAddPostMutation()
+
+  const handelSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    try {
+      const result = await addPost(formData).unwrap()
+      console.log('result: ', result)
+    } catch (error) {
+      console.log('error: Something wrong', error)
+    }
+  }
   return (
-    <form>
+    <form onSubmit={handelSubmit}>
       <div className='mb-6'>
         <label htmlFor='title' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
           Title
@@ -11,6 +37,8 @@ export default function CreatePost() {
           className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Title'
           required
+          value={formData.title}
+          onChange={(event) => setformData((prev) => ({ ...prev, title: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
@@ -23,6 +51,8 @@ export default function CreatePost() {
           className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Url image'
           required
+          value={formData.featuredImage}
+          onChange={(event) => setformData((prev) => ({ ...prev, featuredImage: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
@@ -36,6 +66,8 @@ export default function CreatePost() {
             className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
             placeholder='Your description...'
             required
+            value={formData.description}
+            onChange={(event) => setformData((prev) => ({ ...prev, description: event.target.value }))}
           />
         </div>
       </div>
@@ -49,10 +81,18 @@ export default function CreatePost() {
           className='block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Title'
           required
+          value={formData.publicDate}
+          onChange={(event) => setformData((prev) => ({ ...prev, publicDate: event.target.value }))}
         />
       </div>
       <div className='mb-6 flex items-center'>
-        <input id='publish' type='checkbox' className='h-4 w-4 focus:ring-2 focus:ring-blue-500' />
+        <input
+          id='publish'
+          type='checkbox'
+          checked={formData.published}
+          className='h-4 w-4 focus:ring-2 focus:ring-blue-500'
+          onChange={(event) => setformData((prev) => ({ ...prev, published: event.target.checked }))}
+        />
         <label htmlFor='publish' className='ml-2 text-sm font-medium text-gray-900'>
           Publish
         </label>
