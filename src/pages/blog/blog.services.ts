@@ -92,9 +92,20 @@ export const blogApi = createApi({
           body: data.body
         }
       },
+      //trong trường hợp update hoặc delete thì phải dựa vào id, nên mình nên invalidatesTags theo id để id: "LIST" cũng được nhưng nó sẽ không clear code
       invalidatesTags: (result, error, data) => [{ type: 'Posts', id: data.id }]
+    }),
+    deletePost: build.mutation<Post, string>({
+      query: (id) => {
+        return {
+          url: `posts/${id}`,
+          method: 'DELETE'
+        }
+      },
+      invalidatesTags: (result, error, id) => [{ type: 'Posts', id: id }]
     })
   })
 })
 
-export const { useGetPostsQuery, useGetPostQuery, useAddPostMutation, useUpdatePostMutation } = blogApi // tự phát sinh từ endPoints
+export const { useGetPostsQuery, useGetPostQuery, useAddPostMutation, useUpdatePostMutation, useDeletePostMutation } =
+  blogApi // tự phát sinh từ endPoints

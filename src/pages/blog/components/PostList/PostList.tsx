@@ -30,7 +30,12 @@ export default function PostList() {
             </Fragment>
           )}
 
-          {!isFetching && data?.map((post: Post) => <PostItem id={post.id} post={post} />)}
+          {!isFetching &&
+            data?.map((post: Post) => (
+              <div key={post.id}>
+                <PostItem id={post.id} post={post} />
+              </div>
+            ))}
         </div>
       </div>
     </div>
