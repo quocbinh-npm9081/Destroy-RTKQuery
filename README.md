@@ -1,5 +1,8 @@
 # Báo cáo thực tập ngày 1
 
+> [!NOTE]
+> Xem báo cáo thực tập ngày 2 vui lòng checkout to Day2 Branch
+
 ## Trước ghi clone Project này về hãy clone Server về trước để đảm bảo Website có dữ liệu
 
 ```
@@ -31,9 +34,10 @@ RTK Query lấy cảm hứng từ những thư viện như Apollo Client, React 
 
 ![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/26df1a9a-80d2-468c-bd0e-70a038292e39)
 
-## Get Api with RTK 
+## Get Api with RTK
 
 ![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/bfbe0d28-5949-4dee-84c4-6288dfa19161)
+
 ## Redux devtool check work flow
 
 ![workflow](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/c0ebae72-b1bc-4d97-85bf-b2e4b1d6d779)
