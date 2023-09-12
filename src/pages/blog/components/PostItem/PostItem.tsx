@@ -1,13 +1,21 @@
 import { Post } from 'types/blog.type'
-
+import { startEdit } from 'pages/blog/blog.slice'
+import { RootState } from 'store'
+import { useSelector, useDispatch } from 'react-redux'
 interface Props {
-  key: string
+  id: string
   post: Post
 }
 
-const PostItem: React.FC<Props> = ({ key, post }) => {
+const PostItem: React.FC<Props> = ({ id, post }) => {
+  const dispatch = useDispatch()
+
+  const handleClickEditPost = (id: string) => {
+    dispatch(startEdit(id))
+  }
+
   return (
-    <div key={key} className='flex flex-col items-center overflow-hidden rounded-lg border md:flex-row'>
+    <div key={id} className='flex flex-col items-center overflow-hidden rounded-lg border md:flex-row'>
       <div className='group relative block h-48 w-full shrink-0 self-start overflow-hidden bg-gray-100 md:h-full md:w-32 lg:w-48'>
         <img
           src={post.featuredImage}
@@ -25,6 +33,7 @@ const PostItem: React.FC<Props> = ({ key, post }) => {
             <button
               type='button'
               className='rounded-l-lg border border-gray-200 bg-white py-2 px-4 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700'
+              onClick={() => handleClickEditPost(id)}
             >
               Edit
             </button>

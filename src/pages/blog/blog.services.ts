@@ -53,6 +53,9 @@ export const blogApi = createApi({
         return [{ type: 'Posts' as const, id: 'LIST' }]
       }
     }),
+    getPost: build.query<Post, string>({
+      query: (id) => `posts/${id}`
+    }),
     // Chúng ta dùng mutation đối với các trường hợp POST, PUT, DELETE
     // Post là responsive trả về và Omit<Post, 'id'> là body gửi lên (đã loại bỏ id) nếu là Partial<Post> có ngĩa là body gửi lên có thể thiếu 1 số thuộc tính của Post
 
@@ -84,4 +87,4 @@ export const blogApi = createApi({
   })
 })
 
-export const { useGetPostsQuery, useAddPostMutation } = blogApi // tự phát sinh từ endPoints
+export const { useGetPostsQuery, useGetPostQuery, useAddPostMutation } = blogApi // tự phát sinh từ endPoints

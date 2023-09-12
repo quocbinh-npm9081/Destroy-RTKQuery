@@ -1,7 +1,10 @@
-import { useAddPostMutation } from 'pages/blog/blog.services'
+import { useAddPostMutation, useGetPostQuery } from 'pages/blog/blog.services'
 import { useState } from 'react'
 import { Post } from 'types/blog.type'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from 'store'
+import { useEffect } from 'react'
+import { canelEditPost } from 'pages/blog/blog.slice'
 const initialState: Omit<Post, 'id'> = {
   title: '',
   description: '',
@@ -11,20 +14,34 @@ const initialState: Omit<Post, 'id'> = {
 }
 
 export default function CreatePost() {
-  const [formData, setformData] = useState<Omit<Post, 'id'>>(initialState)
+  const [formData, setFormData] = useState<Omit<Post, 'id'>>(initialState)
   //Unlike the query, Mutation rreturn a tuple , the Mutation hook doesn't execute automatically
   //Không giống như Query hook, Mutation hook không tự dộng trả về, mà ta phải tự đặt các trigger tương ứng với bên trong source của nó
   const [addPost, addPostResult] = useAddPostMutation()
+  const postId = useSelector((state: RootState) => state.blog.postId)
+  const { data } = useGetPostQuery(postId, { skip: !postId }) //Nếu PostID không có thì không cần gọi lại
+  const dispatch = useDispatch()
 
   const handelSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
       const result = await addPost(formData).unwrap()
       console.log('result: ', result)
+      setFormData(initialState)
     } catch (error) {
       console.log('error: Something wrong', error)
     }
   }
+
+  const handleCanel = () => {
+    dispatch(canelEditPost())
+    setFormData(initialState)
+  }
+
+  useEffect(() => {
+    if (data) setFormData(data)
+  }, [data])
+
   return (
     <form onSubmit={handelSubmit}>
       <div className='mb-6'>
@@ -38,7 +55,7 @@ export default function CreatePost() {
           placeholder='Title'
           required
           value={formData.title}
-          onChange={(event) => setformData((prev) => ({ ...prev, title: event.target.value }))}
+          onChange={(event) => setFormData((prev) => ({ ...prev, title: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
@@ -52,7 +69,7 @@ export default function CreatePost() {
           placeholder='Url image'
           required
           value={formData.featuredImage}
-          onChange={(event) => setformData((prev) => ({ ...prev, featuredImage: event.target.value }))}
+          onChange={(event) => setFormData((prev) => ({ ...prev, featuredImage: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
@@ -67,7 +84,7 @@ export default function CreatePost() {
             placeholder='Your description...'
             required
             value={formData.description}
-            onChange={(event) => setformData((prev) => ({ ...prev, description: event.target.value }))}
+            onChange={(event) => setFormData((prev) => ({ ...prev, description: event.target.value }))}
           />
         </div>
       </div>
@@ -82,7 +99,7 @@ export default function CreatePost() {
           placeholder='Title'
           required
           value={formData.publicDate}
-          onChange={(event) => setformData((prev) => ({ ...prev, publicDate: event.target.value }))}
+          onChange={(event) => setFormData((prev) => ({ ...prev, publicDate: event.target.value }))}
         />
       </div>
       <div className='mb-6 flex items-center'>
@@ -91,37 +108,45 @@ export default function CreatePost() {
           type='checkbox'
           checked={formData.published}
           className='h-4 w-4 focus:ring-2 focus:ring-blue-500'
-          onChange={(event) => setformData((prev) => ({ ...prev, published: event.target.checked }))}
+          onChange={(event) => setFormData((prev) => ({ ...prev, published: event.target.checked }))}
         />
         <label htmlFor='publish' className='ml-2 text-sm font-medium text-gray-900'>
           Publish
         </label>
       </div>
       <div>
-        <button
-          className='group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 group-hover:from-purple-600 group-hover:to-blue-500 dark:text-white dark:focus:ring-blue-800'
-          type='submit'
-        >
-          <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
-            Publish Post
-          </span>
-        </button>
-        <button
-          type='submit'
-          className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-teal-300 to-lime-300 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-lime-200 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 dark:focus:ring-lime-800'
-        >
-          <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
-            Update Post
-          </span>
-        </button>
-        <button
-          type='reset'
-          className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-red-100 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 dark:focus:ring-red-400'
-        >
-          <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
-            Cancel
-          </span>
-        </button>
+        {!Boolean(postId) && (
+          <button
+            className='group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 group-hover:from-purple-600 group-hover:to-blue-500 dark:text-white dark:focus:ring-blue-800'
+            type='submit'
+          >
+            <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
+              Publish Post
+            </span>
+          </button>
+        )}
+
+        {Boolean(postId) && (
+          <>
+            <button
+              type='submit'
+              className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-teal-300 to-lime-300 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-lime-200 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 dark:focus:ring-lime-800'
+            >
+              <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
+                Update Post
+              </span>
+            </button>
+            <button
+              type='reset'
+              className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-red-100 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 dark:focus:ring-red-400'
+              onClick={() => handleCanel()}
+            >
+              <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
+                Cancel
+              </span>
+            </button>
+          </>
+        )}
       </div>
     </form>
   )
