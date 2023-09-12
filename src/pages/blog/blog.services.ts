@@ -5,7 +5,7 @@ import { Post } from 'types/blog.type'
 // với createapi chúng ta gọi là slice api
 //Chúng ta sẽ khai báo baseUrl và các endpoints
 
-//baseQuery dduowcjdungf cho mỗi endpont để fetch api
+//baseQuery được dùng cho mỗi endpont để fetch api
 
 //fetchBaseQuery là 1 func nhỏe được xây dựng trên fetch api
 //Nó không thay thế hoàn toàn được Axios nhưng sẽ giải quyết hầu hết các vấn đè của bạn

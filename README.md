@@ -1,4 +1,4 @@
-# Báo cáo thực tập ngày 1
+# Báo cáo thực tập ngày 2
 
 ## Trước ghi clone Project này về hãy clone Server về trước để đảm bảo Website có dữ liệu
 
@@ -6,34 +6,34 @@
 git clone https://github.com/quocbinh-npm9081/dummyServer-EZTEK-RTK.git
 ```
 
-## RTK query là gì?
+## Xây dựng chức năng thêm , cập nhâp (POST, PUT)
 
-RTK query là thư viện thuộc hệ sinh thái Redux giúp chúng ta quản lý việc gọi API và caching dễ dàng.
+Những method bên trong 1 SliceApi
 
-### Lý do RTK query xuất hiện
+- baseQuery được dùng cho mỗi endpont để fetch api vd: host server của ta có adress là **http://localhost4000/** ta sẽ call api đến host này
+- endPoints: Là nới mà ta viết các method làm việc với API, bao gồm có 2 kiểu là query và mutation
+- query thường dùng cho GET
+- mutation: thường dùng cho các trường hợp thay đổi dữ liệu trên server ở đây là POST PUT DELETE
 
-Giúp chúng ta hạn chế những việc lặp đi lặp lại trong quá trình fetch data.
+Post là responsive trả về và Omit<Post, 'id'> là body gửi lên (đã loại bỏ id) nếu là Partial<Post> có ngĩa là body gửi lên có thể thiếu 1 số thuộc tính của Post
 
-Để fetch data trong React
+> [!NOTE]  
+> Lưu ý xem code ví dụ trong file /src/pages/blog/blog.services.ts
 
-- Khai báo useEffect và gọi API trong đó
-- Xử lý cleanup function để tránh việc gọi duplicate data
-- Tracking trạng thái loading để hiển thị skeleton
-- Quản lý thời gian cache khi user tương tác với UI
+### Cập nhập UI sau khi thực hiện POST, PUT,...
 
-Những việc này không khó, nhưng nó nhiều, nếu nhiều component cần implement cái này thì khá mệt. Nếu dùng với Redux thì mệt hơn nữa khi mỗi lần gọi API phải khai báo action, thunk các kiểu. Ngay cả khi khi chúng ta sử dụng `createAsyncThunk` cùng với `createSlice` thì vẫn còn những hạn chế khi chúng ta phải tự quản lý state loading hay tránh gọi duplicate request.
+- Cách 1: Cách truyền thống như trước giờ vẫn làm đó là post body lên seveer là server trả về dữ liệu của post đó
+  1.Lấy dữ liệu server trả về và update vào state redux
+  2.React thấy state Redux thay đổi nên nó sẽ automatically re-render update ui
 
-Những năm gần đây, cộng đồng React nhận ra rằng **fetch data và caching cũng là một nỗi lo khác cùng với việc quản lý state**.
+> [!WARNING]  
+> Rủi ro ==> là nếu khi gọi request add post mà server trả về data không đủ các field để chúng ta hiển thị thì sẽ bị lỗi hoặc bắt buộc handle rất mệt, Chưa kể chúng ra phải quản lú việc cập nhập state trong redux rất mêt( I so mother fucking tired)
 
-RTK Query lấy cảm hứng từ những thư viện như Apollo Client, React Query, Urql và SWR nhưng được build trên Redux Toolkit
+- Cách 2: Đây là cách thường dùng với RTK query
 
-## UI templete
+1. Sau khi post lên server , server sé trả về dữ liệu của post đó
+2. Ta không sử dụng dữ liệu trả về mà tiến hành call api get toàn bộ 1 lần nữa
+3. Lấy dữ liệu từ lần call get api để update state redux
+   => ui update
 
-![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/26df1a9a-80d2-468c-bd0e-70a038292e39)
-
-## Get Api with RTK 
-
-![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/bfbe0d28-5949-4dee-84c4-6288dfa19161)
-## Redux devtool check work flow
-
-![workflow](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/c0ebae72-b1bc-4d97-85bf-b2e4b1d6d779)
+> ====> Điều này đảm bảo dữ liệu phía dưới local luôn luôn mới, Việc này dẫn đến phải call them 1 lần nữa nhưng như vậy là không đáng kể
