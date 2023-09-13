@@ -1,29 +1,73 @@
 import { useAddPostMutation, useGetPostQuery, useUpdatePostMutation } from 'pages/blog/blog.services'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Post } from 'types/blog.type'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store'
 import { useEffect } from 'react'
 import { canelEditPost } from 'pages/blog/blog.slice'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { SerializedError } from '@reduxjs/toolkit'
+import { isEntityError, isSeriallizedError } from 'utils/helpers'
 const initialState: Omit<Post, 'id'> = {
   title: '',
   description: '',
-  publicDate: '',
+  publishDate: '',
   featuredImage: '',
   published: true
 }
+
+type FormError =
+  | {
+      // [key in keyof Omit<Post, 'id'>]: string
+      //thay vì viết như ở trên thì mình có thể viết như ở dưới
+      //Mang ý nghĩa các key bên trong FormError có thể trùng với các key trong initialState
+      [key in keyof typeof initialState]: string
+    }
 
 export default function CreatePost() {
   const [formData, setFormData] = useState<Omit<Post, 'id'> | Post>(initialState)
   //Unlike the query, Mutation rreturn a tuple , the Mutation hook doesn't execute automatically
   //Không giống như Query hook, Mutation hook không tự dộng trả về, mà ta phải tự đặt các trigger tương ứng với bên trong source của nó
   const [addPost, addPostResult] = useAddPostMutation()
-  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
+  const [updatePost, updatePostResult] = useUpdatePostMutation()
   // This is the mutation triggers
   // This is the destructured mutation result]   = useUpdatePostMutation();
   const postId = useSelector((state: RootState) => state.blog.postId)
   const { data } = useGetPostQuery(postId, { skip: !postId }) //Nếu PostID không có thì không cần gọi lại
   const dispatch = useDispatch()
+
+  const errorForm: FormError | null = useMemo(() => {
+    //vì errorResults có thể là  FetchBaseQueryError | SerializedError | undefined, mỗi kiểu lại có cấu trúc khách nhau
+    //Nêu chúng ta cần kiểm tra để hiển thị cho đúng
+    const errorResults: FetchBaseQueryError | SerializedError | undefined = postId
+      ? updatePostResult.error
+      : addPostResult.error
+
+    //Vì mình không biết errorResults trả về kiểu nào trong 2 kieur  FetchBaseQueryError | SerializedError  nên minh phải kiểm tra xem thử data và status trong 2 trường hợp errosResults là  FetchBaseQueryError | SerializedError
+    // if ((errorResults as FetchBaseQueryError).data && (errorResults as FetchBaseQueryError).status) {
+    //   return errorResults as any
+    // }
+    // if ((errorResults as SerializedError).code && (errorResults as SerializedError).message) {
+    //   return errorResults as any
+    // }
+    //NẾU SỬ DỤNG CÁC Ở TRÊN THÌ GÀ QUÁ NÊN PHẢI PREDICATE NÓ TRONG FILE /src/utils/helpers.ts
+    //Thằng errosResults có quá nhiều type nên ta phải typp predicate
+
+    if (isEntityError(errorResults)) {
+      console.log('errorResults: ', errorResults)
+
+      //Sau khi type predicate thì errorResult đã chuyển thành kiểu FetchBaseQueryError
+      //có thê ép kiẻu ngay chổ này được , vì chúng ra đã kiểm tra chắc chắn rồi
+      //Nếu không muốn ép kiểu thì có thẻ khai báo cais interface `EnityError` sao cho tương dồng với FormError là được
+      return errorResults.data.error as FormError
+    }
+
+    // if (isSeriallizedError(errorResults)) {
+    //   return errorResults
+    // }
+
+    return null
+  }, [postId, updatePostResult, addPostResult])
 
   const handelSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -101,8 +145,8 @@ export default function CreatePost() {
           className='block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Title'
           required
-          value={formData.publicDate}
-          onChange={(event) => setFormData((prev) => ({ ...prev, publicDate: event.target.value }))}
+          value={formData.publishDate}
+          onChange={(event) => setFormData((prev) => ({ ...prev, publishDate: event.target.value }))}
         />
       </div>
       <div className='mb-6 flex items-center'>

@@ -74,6 +74,8 @@ export const blogApi = createApi({
     //Việc này dẫn đến phair call them 1 lần nữa như ng như vậy là không đáng kể
     addPost: build.mutation<Post, Omit<Post, 'id'>>({
       query(body) {
+        console.log('publishDate: ', new Date(body.publishDate).getTime())
+        console.log('publishDate: ', new Date().getTime())
         return {
           url: 'posts',
           method: 'POST',
@@ -86,6 +88,8 @@ export const blogApi = createApi({
     }),
     updatePost: build.mutation<Post, { id: string; body: Partial<Post> }>({
       query(data) {
+        // throw new Error(' Lỗi rồi') <--- Lỗi này do người viết code tự đặt RTK sẽ tự động trả về SerializeError
+        //Ngược lại, nếu call API lỗi và server trả về messageCode error thì RTK trả về lỗi dưới dạng FetchBaseQueryError
         return {
           url: `posts/${data.id}`,
           method: 'PUT',
