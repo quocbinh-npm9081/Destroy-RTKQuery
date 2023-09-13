@@ -8,6 +8,7 @@ import { canelEditPost } from 'pages/blog/blog.slice'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { SerializedError } from '@reduxjs/toolkit'
 import { isEntityError, isSeriallizedError } from 'utils/helpers'
+import classNames from 'classnames'
 const initialState: Omit<Post, 'id'> = {
   title: '',
   description: '',
@@ -52,9 +53,11 @@ export default function CreatePost() {
     // }
     //NẾU SỬ DỤNG CÁC Ở TRÊN THÌ GÀ QUÁ NÊN PHẢI PREDICATE NÓ TRONG FILE /src/utils/helpers.ts
     //Thằng errosResults có quá nhiều type nên ta phải typp predicate
+    console.log('errorResults: ', errorResults)
+    console.log('isEntityError', isEntityError(errorResults))
 
     if (isEntityError(errorResults)) {
-      console.log('errorResults: ', errorResults)
+      console.log('isEntityError: ', errorResults)
 
       //Sau khi type predicate thì errorResult đã chuyển thành kiểu FetchBaseQueryError
       //có thê ép kiẻu ngay chổ này được , vì chúng ra đã kiểm tra chắc chắn rồi
@@ -136,19 +139,40 @@ export default function CreatePost() {
         </div>
       </div>
       <div className='mb-6'>
-        <label htmlFor='publishDate' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
+        <label
+          htmlFor='publishDate'
+          className={classNames('mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300', {
+            'text-red-700': Boolean(errorForm?.publishDate),
+            'text-gray-900': !Boolean(errorForm?.publishDate)
+          })}
+        >
           Publish Date
         </label>
         <input
           type='datetime-local'
           id='publishDate'
-          className='block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
+          className={classNames(
+            'block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500',
+            {
+              'border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-blue-500':
+                Boolean(errorForm?.publishDate),
+              ' border-gray-300 bg-gray-50': !Boolean(errorForm?.publishDate)
+            }
+          )}
           placeholder='Title'
           required
           value={formData.publishDate}
           onChange={(event) => setFormData((prev) => ({ ...prev, publishDate: event.target.value }))}
         />
       </div>
+
+      {errorForm?.publishDate && (
+        <p className='mt-2 text-sm text-red-600'>
+          <span className='font-medium'>Lỗi !</span>
+          {errorForm?.publishDate}
+        </p>
+      )}
+
       <div className='mb-6 flex items-center'>
         <input
           id='publish'

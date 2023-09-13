@@ -74,8 +74,6 @@ export const blogApi = createApi({
     //Việc này dẫn đến phair call them 1 lần nữa như ng như vậy là không đáng kể
     addPost: build.mutation<Post, Omit<Post, 'id'>>({
       query(body) {
-        console.log('publishDate: ', new Date(body.publishDate).getTime())
-        console.log('publishDate: ', new Date().getTime())
         return {
           url: 'posts',
           method: 'POST',

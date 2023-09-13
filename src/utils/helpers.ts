@@ -26,7 +26,7 @@ interface EntityError {
 export function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
   //Kiểm tra cái error truyền vào phải là objectm errro != null và bên trong error phải tonnf tại key status
   //Đủ cá kiểu kiên này thì nó mới là isFetchBaseQueryError
-  return typeof error === 'object' && error !== null && 'statsus' in error
+  return typeof error === 'object' && error !== null && 'status' in error
 }
 
 export function isSeriallizedError(error: unknown): error is SerializedError {
