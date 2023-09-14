@@ -83,7 +83,7 @@ export const blogApi = createApi({
       },
       //body là ở cient truyền lên cái gì thì ở đây ta nhận cái đấy
       //invalidatesTags cung cấp các tags nếu các tag match với providesTags thì providesTags đó sẽ được gọi lại
-      invalidatesTags: (result, error, body) => [{ type: 'Posts', id: 'LIST' }] // kết quả này giống hệt với return trong providesTags của getPost nên getPost sẽ được gợi lại
+      invalidatesTags: (result, error, body) => (error ? [] : [{ type: 'Posts', id: 'LIST' }]) // kết quả này giống hệt với return trong providesTags của getPost nên getPost sẽ được gợi lại
     }),
     updatePost: build.mutation<Post, { id: string; body: Partial<Post> }>({
       query(data) {
@@ -102,7 +102,7 @@ export const blogApi = createApi({
         }
       },
       //trong trường hợp update hoặc delete thì phải dựa vào id, nên mình nên invalidatesTags theo id để id: "LIST" cũng được nhưng nó sẽ không clear code
-      invalidatesTags: (result, error, data) => [{ type: 'Posts', id: data.id }]
+      invalidatesTags: (result, error, data) => (error ? [] : [{ type: 'Posts', id: data.id }])
     }),
     deletePost: build.mutation<Post, string>({
       query: (id) => {
@@ -111,7 +111,7 @@ export const blogApi = createApi({
           method: 'DELETE'
         }
       },
-      invalidatesTags: (result, error, id) => [{ type: 'Posts', id: id }]
+      invalidatesTags: (result, error, id) => (error ? [] : [{ type: 'Posts', id: id }])
     })
   })
 })
