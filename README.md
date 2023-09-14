@@ -71,4 +71,4 @@ RTK trả về lỗi này dưới dạng SerializedError khi người dùng đ�
 
 Như bạn thấy biến a không có property b như ai đó vẫn cố tình truy cập đến b, điều này sẽ xảy ra lỗi khi Runtime ta cần bắt lỗi nó với catch và show Runtime alert
 
-![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/a26cb5a9-b8e1-47d2-9773-4dc9ed3fbce6)
+![image](https://github.com/quocbinh-npm9081/Destroy-RTKQuery/assets/68917523/f1b472e0-dff5-43a1-bf23-e4dbf502a91b)
