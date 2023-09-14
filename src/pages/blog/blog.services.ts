@@ -21,7 +21,18 @@ import { CustomError } from 'utils/helpers'
 export const blogApi = createApi({
   reducerPath: 'blogApi', // Tên field trong Redux State
   tagTypes: ['Posts'], // Những kiểu tag được phép dùng trong blogAPI
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:4000/' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:4000/',
+    prepareHeaders(headers) {
+      headers.set('authorization', 'Bearer Binh-Senior-Intern-abcxyz')
+      return headers
+    }
+  }),
+
+  keepUnusedDataFor: 30, //<--- caching dũ liệu với time expire là 30s
+  refetchOnMountOrArgChange: 10, //Sau 10s thì cho phép call api lại
+  refetchOnReconnect: true, // call api sau khi mất internet
+
   endpoints: (build) => ({
     //GenericType theo thứ tự là kiểu response trả về và argument
     getPosts: build.query<Post[], void>({
@@ -40,7 +51,6 @@ export const blogApi = createApi({
         if (result) {
           // result là mảng các bài post
           console.log('Result respone getPost', result)
-
           const final = [
             ...result.map(({ id }) => ({ type: 'Posts' as const, id })),
             {
@@ -48,14 +58,23 @@ export const blogApi = createApi({
               id: 'LIST'
             }
           ]
-
           return final
         }
         return [{ type: 'Posts' as const, id: 'LIST' }]
       }
     }),
     getPost: build.query<Post, string>({
-      query: (id) => `posts/${id}`
+      query: (id) => ({
+        url: `posts/${id}`,
+        headers: {
+          hello: 'Binh Senior Intern'
+        },
+        //Bây tui muốn truyển lên server 1 cái url có params là posts/${id}?name=binh&nickname=vip
+        params: {
+          name: 'Binh',
+          nickname: 'VIP'
+        }
+      })
     }),
     // Chúng ta dùng mutation đối với các trường hợp POST, PUT, DELETE
     // Post là responsive trả về và Omit<Post, 'id'> là body gửi lên (đã loại bỏ id) nếu là Partial<Post> có ngĩa là body gửi lên có thể thiếu 1 số thuộc tính của Post

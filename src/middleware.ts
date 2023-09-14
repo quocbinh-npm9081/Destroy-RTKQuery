@@ -32,8 +32,8 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
     }
   }
   if (isRejectedWithValue(action)) {
-    //  isRejectedWithValue là 1 func giúp chúng ta kiểm tra những action có rejectedWuthValue = true từ createAsyncThunk
-    //  RTK Query sử dụng isRejectedWithValue sử dụng createAsyncThunk bên trong nên ta có thể sử dụng isRejectedWithValue
+    // isRejectedWithValue là 1 func giúp chúng ta kiểm tra những action có rejectedWuthValue = true từ createAsyncThunk
+    // RTK Query sử dụng isRejectedWithValue sử dụng createAsyncThunk bên trong nên ta có thể sử dụng isRejectedWithValue
     // isRejectedWithValue chỉ có thể bắt cáclối server trả về khi ấy isRejectedWithValue = true
     // isRejecttedWithValue không bắt các lỗi caching khi ấy  isRejectedWithValue = false
     if (isPayLoadErrorMessage(action.payload)) {

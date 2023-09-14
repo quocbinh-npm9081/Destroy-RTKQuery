@@ -7,8 +7,9 @@ import { useEffect } from 'react'
 import { canelEditPost } from 'pages/blog/blog.slice'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { SerializedError } from '@reduxjs/toolkit'
-import { isEntityError, isSeriallizedError } from 'utils/helpers'
+import { isEntityError } from 'utils/helpers'
 import classNames from 'classnames'
+import { log } from 'utils/logHandle'
 const initialState: Omit<Post, 'id'> = {
   title: '',
   description: '',
@@ -34,8 +35,10 @@ export default function CreatePost() {
   // This is the mutation triggers
   // This is the destructured mutation result]   = useUpdatePostMutation();
   const postId = useSelector((state: RootState) => state.blog.postId)
-  const { data } = useGetPostQuery(postId, { skip: !postId }) //Nếu PostID không có thì không cần gọi lại
+  const { data, refetch } = useGetPostQuery(postId, { skip: !postId, pollingInterval: 1000 }) //Nếu PostID không có thì không cần gọi lại | pollingInterval là realtime cứ mỗi 1000 call api lại 1 lần
   const dispatch = useDispatch()
+  log('re-render', 'info')
+  log('re-render', 'warning')
 
   const errorForm: FormError | null = useMemo(() => {
     //vì errorResults có thể là  FetchBaseQueryError | SerializedError | undefined, mỗi kiểu lại có cấu trúc khách nhau
@@ -92,6 +95,16 @@ export default function CreatePost() {
 
   return (
     <form onSubmit={handelSubmit}>
+      <button
+        onClick={() => refetch()}
+        type='button'
+        className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-teal-300 to-lime-300 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-lime-200 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 dark:focus:ring-lime-800'
+      >
+        <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
+          Force Frech
+        </span>
+      </button>
+
       <div className='mb-6'>
         <label htmlFor='title' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
           Title
