@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Post } from 'types/blog.type'
+import { CustomError } from 'utils/helpers'
 
 //nếu bên slice chúng ta dùng CreateSlice để tạo slice thì bên RTK query dung CreateApi
 // với createapi chúng ta gọi là slice api
@@ -86,12 +87,18 @@ export const blogApi = createApi({
     }),
     updatePost: build.mutation<Post, { id: string; body: Partial<Post> }>({
       query(data) {
-        // throw new Error(' Lỗi rồi') <--- Lỗi này do người viết code tự đặt RTK sẽ tự động trả về SerializeError
+        // <--- Lỗi này do người viết code tự đặt RTK sẽ tự động trả về SerializeError
         //Ngược lại, nếu call API lỗi và server trả về messageCode error thì RTK trả về lỗi dưới dạng FetchBaseQueryError
-        return {
-          url: `posts/${data.id}`,
-          method: 'PUT',
-          body: data.body
+        try {
+          let a: any = null
+          a.b = 1 //<--- Chổ đây sẽ bị lỗi trong tương lai
+          return {
+            url: `posts/${data.id}`,
+            method: 'PUT',
+            body: data.body
+          }
+        } catch (error: any) {
+          throw new CustomError(error.message) //<--- show lỗi khi run time
         }
       },
       //trong trường hợp update hoặc delete thì phải dựa vào id, nên mình nên invalidatesTags theo id để id: "LIST" cũng được nhưng nó sẽ không clear code

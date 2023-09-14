@@ -53,8 +53,6 @@ export default function CreatePost() {
     // }
     //NẾU SỬ DỤNG CÁC Ở TRÊN THÌ GÀ QUÁ NÊN PHẢI PREDICATE NÓ TRONG FILE /src/utils/helpers.ts
     //Thằng errosResults có quá nhiều type nên ta phải typp predicate
-    console.log('errorResults: ', errorResults)
-    console.log('isEntityError', isEntityError(errorResults))
 
     if (isEntityError(errorResults)) {
       console.log('isEntityError: ', errorResults)
